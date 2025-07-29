@@ -22,7 +22,13 @@ const HeroSection = () => {
     }, []);
 
     if (!bio || !resume) {
-        return <div>Loading...</div>;
+        return (
+            <HeroContainer>
+                <div style={{color: 'white', fontSize: '24px', textAlign: 'center'}}>
+                    Loading portfolio...
+                </div>
+            </HeroContainer>
+        );
     }
 
     return (
