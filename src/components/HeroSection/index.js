@@ -48,7 +48,7 @@ const HeroSection = () => {
                                 <Span>
                                     <Typewriter
                                         options={{
-                                            strings: bio.roles,
+                                            strings: bio?.roles || ['Developer'],
                                             autoStart: true,
                                             loop: true,
                                         }}

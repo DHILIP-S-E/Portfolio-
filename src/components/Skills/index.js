@@ -137,11 +137,11 @@ const Skills = () => {
         <Title>Skills</Title>
         <Desc>Here are some of my skills on which I have been working on for the past 2 years.</Desc>
         <SkillsContainer>
-          {skillsData.skills.map((skillCategory) => (
+          {skillsData?.skills?.map((skillCategory) => (
             <Skill key={skillCategory.title}>
               <SkillTitle>{skillCategory.title}</SkillTitle>
               <SkillList>
-                {skillCategory.skills.map((item) => (
+                {skillCategory?.skills?.map((item) => (
                   <SkillItem key={item.name}>
                     <SkillImage src={item.image} />
                     {item.name}
