@@ -14,3 +14,7 @@ frontend:
   cache:
     paths:
       - .npm/**/*
+  env:
+    variables:
+      CI: false
+      GENERATE_SOURCEMAP: false
