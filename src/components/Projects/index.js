@@ -34,11 +34,11 @@ const Projects = ({ openModal, setOpenModal }) => {
           <ToggleButton active={toggle === 'Agent'} value="Agent" onClick={() => setToggle('Agent')}>AGENT</ToggleButton>
         </ToggleButtonGroup>
         <CardContainer>
-          {projects
-            .filter((item) => item.category === toggle)
-            .map((project) => (
-              <ProjectCard project={project} openModal={openModal} setOpenModal={setOpenModal}/>
-            ))}
+          {projects && projects.length > 0 ? projects
+            .filter((item) => item?.category === toggle)
+            .map((project, index) => (
+              <ProjectCard key={index} project={project} openModal={openModal} setOpenModal={setOpenModal}/>
+            )) : <div>No projects found</div>}
         </CardContainer>
       </Wrapper>
     </Container>
