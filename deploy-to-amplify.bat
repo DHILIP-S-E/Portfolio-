@@ -1,5 +1,5 @@
-@echo off
 echo Deploying to AWS Amplify...
+@echo off
 
 echo 1. Initialize git repository
 git init
