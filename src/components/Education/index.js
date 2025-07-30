@@ -124,8 +124,10 @@ const Education = () => {
             <EducationContent>
               <SchoolName>{edu.school}</SchoolName>
               {edu.degree && <Degree>{edu.degree}</Degree>}
+              }
               <Duration>{edu.date}</Duration>
               {edu.grade && <Grade>Grade: {edu.grade}</Grade>}
+              }
               <EducationDescription>{edu.desc}</EducationDescription>
             </EducationContent>
           </EducationCard>
