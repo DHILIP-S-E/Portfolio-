@@ -33,11 +33,12 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
-        <Router >
+        <Router basename={process.env.PUBLIC_URL || '/'}>
           <Navbar />
           <Body>
             <HeroSection />
             <Wrapper>
+              <About />
               <Skills />
             </Wrapper>
             <Projects openModal={openModal} setOpenModal={setOpenModal} />

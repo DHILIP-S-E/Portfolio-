@@ -14,7 +14,9 @@ frontend:
   cache:
     paths:
       - .npm/**/*
+      - node_modules/**/*
   env:
     variables:
       CI: false
       GENERATE_SOURCEMAP: false
+      NODE_OPTIONS: --max_old_space_size=4096
