@@ -1,45 +1,44 @@
-import React from 'react'
-import styled from 'styled-components'
+import React from 'react';
+import styled from 'styled-components';
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  position: relative;
-  z-index: 1;
   align-items: center;
-  padding: 80px 0px;
-`
+  padding: 80px 20px;
+  background: ${({ theme }) => theme.bg};
+`;
 
-const Title = styled.div`
-  font-size: 42px;
-  text-align: center;
+const Title = styled.h2`
+  font-size: 2.5rem;
   font-weight: 600;
-  margin-top: 20px;
   color: ${({ theme }) => theme.text_primary};
-`
-
-const Desc = styled.div`
-  font-size: 18px;
+  margin-bottom: 20px;
   text-align: center;
-  max-width: 600px;
+`;
+
+const Description = styled.p`
+  font-size: 1.1rem;
   color: ${({ theme }) => theme.text_secondary};
-  margin-top: 20px;
+  text-align: center;
+  max-width: 800px;
   line-height: 1.6;
-`
+`;
 
 const About = () => {
   return (
-    <Container id="about">
+    <Container id="about-section">
       <Title>About Me</Title>
-      <Desc>
-        I am a passionate full-stack developer with expertise in modern web technologies. 
-        I love creating innovative solutions and have experience working with React, Node.js, 
-        Python, and cloud technologies like AWS. I'm always eager to learn new technologies 
-        and take on challenging projects that push the boundaries of what's possible.
-      </Desc>
+      <Description>
+        I am a passionate Data Science student with expertise in Python, Machine Learning, 
+        and cloud technologies. I love creating innovative solutions and have experience 
+        working with various data science tools and frameworks. I'm always eager to learn 
+        new technologies and take on challenging projects that push the boundaries of 
+        what's possible with data.
+      </Description>
     </Container>
-  )
-}
+  );
+};
 
 export default About;

@@ -1,176 +1,248 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import emailjs from '@emailjs/browser';
-import { Snackbar } from '@mui/material';
 import { loadMarkdownFile } from '../../utils/contentLoader';
 
 const Container = styled.div`
-display: flex;
-flex-direction: column;
-justify-content: center;
-position: relative;
-z-index: 1;
-align-items: center;
-@media (max-width: 960px) {
-    padding: 0px;
-}
-`
-
-const Wrapper = styled.div`
-position: relative;
-display: flex;
-justify-content: space-between;
-align-items: center;
-flex-direction: column;
-width: 100%;
-max-width: 1350px;
-padding: 0px 0px 80px 0px;
-gap: 12px;
-@media (max-width: 960px) {
-    flex-direction: column;
-}
-`
-
-const Title = styled.div`
-font-size: 42px;
-text-align: center;
-font-weight: 600;
-margin-top: 20px;
-  color: ${({ theme }) => theme.text_primary};
-  @media (max-width: 768px) {
-      margin-top: 12px;
-      font-size: 32px;
-  }
-`;
-
-const Desc = styled.div`
-    font-size: 18px;
-    text-align: center;
-    max-width: 600px;
-    color: ${({ theme }) => theme.text_secondary};
-    @media (max-width: 768px) {
-        margin-top: 12px;
-        font-size: 16px;
-    }
-`;
-
-
-const ContactForm = styled.form`
-  width: 95%;
-  max-width: 600px;
   display: flex;
   flex-direction: column;
-  background-color: ${({ theme }) => theme.card};
-  padding: 32px;
-  border-radius: 16px;
-  box-shadow: rgba(23, 92, 230, 0.15) 0px 4px 24px;
-  margin-top: 28px;
-  gap: 12px;
-`
+  justify-content: center;
+  align-items: center;
+  padding: 80px 20px;
+  background: ${({ theme }) => theme.bg};
+`;
 
-const ContactTitle = styled.div`
-  font-size: 24px;
-  margin-bottom: 6px;
+const Title = styled.h2`
+  font-size: 2.5rem;
   font-weight: 600;
   color: ${({ theme }) => theme.text_primary};
-`
-
-const ContactInput = styled.input`
-  flex: 1;
-  background-color: transparent;
-  border: 1px solid ${({ theme }) => theme.text_secondary};
-  outline: none;
-  font-size: 18px;
-  color: ${({ theme }) => theme.text_primary};
-  border-radius: 12px;
-  padding: 12px 16px;
-  &:focus {
-    border: 1px solid ${({ theme }) => theme.primary};
-  }
-`
-
-const ContactInputMessage = styled.textarea`
-  flex: 1;
-  background-color: transparent;
-  border: 1px solid ${({ theme }) => theme.text_secondary};
-  outline: none;
-  font-size: 18px;
-  color: ${({ theme }) => theme.text_primary};
-  border-radius: 12px;
-  padding: 12px 16px;
-  &:focus {
-    border: 1px solid ${({ theme }) => theme.primary};
-  }
-`
-
-const ContactButton = styled.input`
-  width: 100%;
-  text-decoration: none;
+  margin-bottom: 20px;
   text-align: center;
-  background: hsla(271, 100%, 50%, 1);
-  background: linear-gradient(225deg, hsla(271, 100%, 50%, 1) 0%, hsla(294, 100%, 50%, 1) 100%);
-  background: -moz-linear-gradient(225deg, hsla(271, 100%, 50%, 1) 0%, hsla(294, 100%, 50%, 1) 100%);
-  background: -webkit-linear-gradient(225deg, hsla(271, 100%, 50%, 1) 0%, hsla(294, 100%, 50%, 1) 100%);
-  padding: 13px 16px;
-  margin-top: 2px;
-  border-radius: 12px;
-  border: none;
+`;
+
+const Description = styled.p`
+  font-size: 1.1rem;
+  color: ${({ theme }) => theme.text_secondary};
+  text-align: center;
+  max-width: 600px;
+  margin-bottom: 50px;
+`;
+
+const ContactForm = styled.form`
+  width: 100%;
+  max-width: 600px;
+  background: ${({ theme }) => theme.card};
+  border-radius: 16px;
+  padding: 40px;
+  border: 1px solid ${({ theme }) => theme.primary}20;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+`;
+
+const FormGroup = styled.div`
+  margin-bottom: 20px;
+`;
+
+const Label = styled.label`
+  display: block;
+  font-size: 1rem;
+  font-weight: 500;
   color: ${({ theme }) => theme.text_primary};
-  font-size: 18px;
+  margin-bottom: 8px;
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid ${({ theme }) => theme.primary}30;
+  border-radius: 8px;
+  background: transparent;
+  color: ${({ theme }) => theme.text_primary};
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.primary};
+  }
+  
+  &::placeholder {
+    color: ${({ theme }) => theme.text_secondary};
+  }
+`;
+
+const TextArea = styled.textarea`
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid ${({ theme }) => theme.primary}30;
+  border-radius: 8px;
+  background: transparent;
+  color: ${({ theme }) => theme.text_primary};
+  font-size: 1rem;
+  min-height: 120px;
+  resize: vertical;
+  transition: border-color 0.3s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.primary};
+  }
+  
+  &::placeholder {
+    color: ${({ theme }) => theme.text_secondary};
+  }
+`;
+
+const SubmitButton = styled.button`
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, ${({ theme }) => theme.primary} 0%, ${({ theme }) => theme.primary}CC 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
   font-weight: 600;
-`
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px ${({ theme }) => theme.primary}40;
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+`;
+
+const Message = styled.div`
+  margin-top: 20px;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  background: ${({ type, theme }) => 
+    type === 'success' ? '#4CAF50' : 
+    type === 'error' ? '#f44336' : 'transparent'};
+  color: white;
+  display: ${({ show }) => show ? 'block' : 'none'};
+`;
 
 const Contact = () => {
-  const [open, setOpen] = React.useState(false);
-  const form = useRef();
   const [contactData, setContactData] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState({ show: false, type: '', text: '' });
+  const form = useRef();
 
   useEffect(() => {
     const fetchContact = async () => {
-      const contactContent = await loadMarkdownFile('/content/contact/index.md');
-      setContactData(contactContent.frontmatter);
+      try {
+        const contactContent = await loadMarkdownFile('/content/contact/index.md');
+        setContactData(contactContent.frontmatter);
+      } catch (error) {
+        console.error('Error loading contact data:', error);
+      }
     };
     fetchContact();
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    emailjs.sendForm('service_tox7kqs', 'template_nv7k7mj', form.current, 'SybVGsYS52j2TfLbi')
-      .then((result) => {
-        setOpen(true);
-        form.current.reset();
-      }, (error) => {
-        console.log(error.text);
+    setIsSubmitting(true);
+
+    try {
+      await emailjs.sendForm(
+        'service_tox7kqs',
+        'template_nv7k7mj',
+        form.current,
+        'SybVGsYS52j2TfLbi'
+      );
+      
+      setMessage({
+        show: true,
+        type: 'success',
+        text: 'Message sent successfully! I\'ll get back to you soon.'
       });
+      
+      form.current.reset();
+    } catch (error) {
+      setMessage({
+        show: true,
+        type: 'error',
+        text: 'Failed to send message. Please try again.'
+      });
+    }
+
+    setIsSubmitting(false);
+    setTimeout(() => setMessage({ show: false, type: '', text: '' }), 5000);
   };
 
   if (!contactData) {
-    return <div>Loading...</div>;
+    return (
+      <Container>
+        <div>Loading...</div>
+      </Container>
+    );
   }
 
   return (
-    <Container>
-      <Wrapper>
-        <Title>Contact</Title>
-        <Desc>{contactData.description}</Desc>
-        <ContactForm ref={form} onSubmit={handleSubmit}>
-          <ContactTitle>{contactData.form_title}</ContactTitle>
-          <ContactInput placeholder="Your Email" name="from_email" />
-          <ContactInput placeholder="Your Name" name="from_name" />
-          <ContactInput placeholder="Subject" name="subject" />
-          <ContactInputMessage placeholder="Message" rows="4" name="message" />
-          <ContactButton type="submit" value="Send" />
-        </ContactForm>
-        <Snackbar
-          open={open}
-          autoHideDuration={6000}
-          onClose={() => setOpen(false)}
-          message="Email sent successfully!"
-          severity="success"
-        />
-      </Wrapper>
+    <Container id="contact">
+      <Title>Contact</Title>
+      <Description>{contactData.description}</Description>
+      
+      <ContactForm ref={form} onSubmit={handleSubmit}>
+        <FormGroup>
+          <Label htmlFor="from_name">Name</Label>
+          <Input
+            type="text"
+            id="from_name"
+            name="from_name"
+            placeholder="Your Name"
+            required
+          />
+        </FormGroup>
+        
+        <FormGroup>
+          <Label htmlFor="from_email">Email</Label>
+          <Input
+            type="email"
+            id="from_email"
+            name="from_email"
+            placeholder="your.email@example.com"
+            required
+          />
+        </FormGroup>
+        
+        <FormGroup>
+          <Label htmlFor="subject">Subject</Label>
+          <Input
+            type="text"
+            id="subject"
+            name="subject"
+            placeholder="Subject"
+            required
+          />
+        </FormGroup>
+        
+        <FormGroup>
+          <Label htmlFor="message">Message</Label>
+          <TextArea
+            id="message"
+            name="message"
+            placeholder="Your message..."
+            required
+          />
+        </FormGroup>
+        
+        <SubmitButton type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Sending...' : 'Send Message'}
+        </SubmitButton>
+        
+        <Message show={message.show} type={message.type}>
+          {message.text}
+        </Message>
+      </ContactForm>
     </Container>
   );
 };
 
-export default Contact
+export default Contact;

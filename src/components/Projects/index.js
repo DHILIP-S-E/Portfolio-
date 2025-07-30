@@ -1,48 +1,116 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Wrapper, Title, Desc, CardContainer, ToggleButtonGroup, ToggleButton, Divider } from './ProjectsStyle';
-import ProjectCard from '../Cards/ProjectCards';
+import styled from 'styled-components';
+import ProjectCard from './ProjectCard';
 import { loadMarkdownCollection } from '../../utils/contentLoader';
 
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 80px 20px;
+  background: ${({ theme }) => theme.bg};
+`;
+
+const Title = styled.h2`
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: ${({ theme }) => theme.text_primary};
+  margin-bottom: 20px;
+  text-align: center;
+`;
+
+const Description = styled.p`
+  font-size: 1.1rem;
+  color: ${({ theme }) => theme.text_secondary};
+  text-align: center;
+  max-width: 600px;
+  margin-bottom: 40px;
+`;
+
+const FilterButtons = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-bottom: 50px;
+  flex-wrap: wrap;
+  justify-content: center;
+`;
+
+const FilterButton = styled.button`
+  padding: 10px 20px;
+  border: 2px solid ${({ theme }) => theme.primary};
+  background: ${({ active, theme }) => active ? theme.primary : 'transparent'};
+  color: ${({ active, theme }) => active ? 'white' : theme.primary};
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: ${({ theme }) => theme.primary};
+    color: white;
+  }
+`;
+
+const ProjectsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 30px;
+  width: 100%;
+  max-width: 1200px;
+`;
+
 const Projects = ({ openModal, setOpenModal }) => {
-  const [toggle, setToggle] = useState('Web app');
   const [projects, setProjects] = useState([]);
+  const [filter, setFilter] = useState('All');
 
   useEffect(() => {
     const fetchProjects = async () => {
-      const projectCollection = await loadMarkdownCollection('/content/projects');
-      setProjects(projectCollection);
+      try {
+        const projectCollection = await loadMarkdownCollection('/content/projects');
+        setProjects(projectCollection);
+      } catch (error) {
+        console.error('Error loading projects:', error);
+      }
     };
     fetchProjects();
   }, []);
 
-  if (projects.length === 0) {
-    return <div>Loading projects...</div>;
-  }
+  const categories = ['All', ...new Set(projects.map(project => project.category))];
+  const filteredProjects = filter === 'All' 
+    ? projects 
+    : projects.filter(project => project.category === filter);
 
   return (
     <Container id="projects">
-      <Wrapper>
-        <Title>Projects</Title>
-        <Desc>
-          I have worked on a wide range of projects. From web apps to android apps. Here are some of my projects.
-        </Desc>
-        <ToggleButtonGroup >
-          <ToggleButton active={toggle === 'Web app'} value="Web app" onClick={() => setToggle('Web app')}>WEB APP</ToggleButton>
-          <Divider />
-          <ToggleButton active={toggle === 'Python'} value="Python" onClick={() => setToggle('Python')}>PYTHON</ToggleButton>
-          <Divider />
-          <ToggleButton active={toggle === 'Agent'} value="Agent" onClick={() => setToggle('Agent')}>AGENT</ToggleButton>
-        </ToggleButtonGroup>
-        <CardContainer>
-          {projects && projects.length > 0 ? projects
-            .filter((item) => item?.category === toggle)
-            .map((project, index) => (
-              <ProjectCard key={index} project={project} openModal={openModal} setOpenModal={setOpenModal}/>
-            )) : <div>No projects found</div>}
-        </CardContainer>
-      </Wrapper>
+      <Title>Projects</Title>
+      <Description>
+        Here are some of the projects I've worked on, showcasing my skills in various technologies.
+      </Description>
+      
+      <FilterButtons>
+        {categories.map(category => (
+          <FilterButton
+            key={category}
+            active={filter === category}
+            onClick={() => setFilter(category)}
+          >
+            {category}
+          </FilterButton>
+        ))}
+      </FilterButtons>
+      
+      <ProjectsGrid>
+        {filteredProjects.map((project, index) => (
+          <ProjectCard
+            key={index}
+            project={project}
+            setOpenModal={setOpenModal}
+          />
+        ))}
+      </ProjectsGrid>
     </Container>
   );
 };
 
-export default Projects
+export default Projects;

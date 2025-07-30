@@ -1,117 +1,138 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import Timeline from '@mui/lab/Timeline';
-import TimelineItem from '@mui/lab/TimelineItem';
-import TimelineSeparator from '@mui/lab/TimelineSeparator';
-import TimelineConnector from '@mui/lab/TimelineConnector';
-import TimelineContent from '@mui/lab/TimelineContent';
-import TimelineDot from '@mui/lab/TimelineDot';
-import EducationCard from '../Cards/EducationCard';
 import { loadMarkdownCollection } from '../../utils/contentLoader';
 
 const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    position: relative;
-    z-index: 1;
-    align-items: center;
-    padding: 40px 0px 80px 0px;
-    @media (max-width: 960px) {
-        padding: 0px;
-    }
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 80px 20px;
+  background: linear-gradient(135deg, ${({ theme }) => theme.card_light}20 0%, ${({ theme }) => theme.bg} 100%);
 `;
 
-const Wrapper = styled.div`
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-direction: column;
-    width: 100%;
-    max-width: 1350px;
-    padding: 80px 0;
-    gap: 12px;
-    @media (max-width: 960px) {
-        flex-direction: column;
-    }
-`;
-
-const Title = styled.div`
-font-size: 42px;
-text-align: center;
-font-weight: 600;
-margin-top: 20px;
+const Title = styled.h2`
+  font-size: 2.5rem;
+  font-weight: 600;
   color: ${({ theme }) => theme.text_primary};
+  margin-bottom: 20px;
+  text-align: center;
+`;
+
+const Description = styled.p`
+  font-size: 1.1rem;
+  color: ${({ theme }) => theme.text_secondary};
+  text-align: center;
+  max-width: 600px;
+  margin-bottom: 50px;
+`;
+
+const EducationList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 100%;
+  max-width: 800px;
+`;
+
+const EducationCard = styled.div`
+  background: ${({ theme }) => theme.card};
+  border-radius: 16px;
+  padding: 30px;
+  border: 1px solid ${({ theme }) => theme.primary}20;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  
   @media (max-width: 768px) {
-      margin-top: 12px;
-      font-size: 32px;
+    flex-direction: column;
+    text-align: center;
   }
 `;
 
-const Desc = styled.div`
-    font-size: 18px;
-    text-align: center;
-    max-width: 600px;
-    color: ${({ theme }) => theme.text_secondary};
-    @media (max-width: 768px) {
-        margin-top: 12px;
-        font-size: 16px;
-    }
+const SchoolLogo = styled.img`
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  object-fit: cover;
 `;
 
-const TimelineSection = styled.div`
-    width: 100%;
-    max-width: 1000px;
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
+const EducationContent = styled.div`
+  flex: 1;
 `;
 
-const Index = () => {
-    const [education, setEducation] = useState([]);
+const SchoolName = styled.h3`
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: ${({ theme }) => theme.text_primary};
+  margin-bottom: 5px;
+`;
 
-    useEffect(() => {
-        const fetchEducation = async () => {
-            const educationCollection = await loadMarkdownCollection('/content/education');
-            setEducation(educationCollection);
-        };
-        fetchEducation();
-    }, []);
+const Degree = styled.h4`
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: ${({ theme }) => theme.primary};
+  margin-bottom: 5px;
+`;
 
-    if (education.length === 0) {
-        return <div>Loading education...</div>;
-    }
+const Duration = styled.p`
+  font-size: 0.9rem;
+  color: ${({ theme }) => theme.text_secondary};
+  margin-bottom: 5px;
+`;
 
-    return (
-        <Container id="education">
-            <Wrapper>
-                <Title>Education</Title>
-                <Desc>
-                    My education has been a journey of self-discovery and growth. My educational details are as follows.
-                </Desc>
-                <TimelineSection>
-                    <Timeline>
-                        {education && education.length > 0 ? education.map((educationItem, index) => (
-                            <TimelineItem key={index}>
-                                <TimelineContent sx={{ py: '12px', px: 2 }}>
-                                    <EducationCard education={educationItem}/>
-                                </TimelineContent>
-                                <TimelineSeparator>
-                                    <TimelineDot variant="outlined" color="secondary" />
-                                    {index !== education.length - 1 && <TimelineConnector style={{ background: '#854CE6' }} />}
-                                </TimelineSeparator>
-                            </TimelineItem>
-                        )) : <div>No education data found</div>}
-                    </Timeline>
+const Grade = styled.p`
+  font-size: 0.9rem;
+  color: ${({ theme }) => theme.text_secondary};
+  margin-bottom: 10px;
+  font-weight: 500;
+`;
 
-                </TimelineSection>
-            </Wrapper>
-        </Container>
-    )
-}
+const EducationDescription = styled.p`
+  font-size: 0.9rem;
+  color: ${({ theme }) => theme.text_secondary};
+  line-height: 1.5;
+`;
 
-export default Index
+const Education = () => {
+  const [education, setEducation] = useState([]);
+
+  useEffect(() => {
+    const fetchEducation = async () => {
+      try {
+        const educationCollection = await loadMarkdownCollection('/content/education');
+        setEducation(educationCollection);
+      } catch (error) {
+        console.error('Error loading education:', error);
+      }
+    };
+    fetchEducation();
+  }, []);
+
+  return (
+    <Container id="education">
+      <Title>Education</Title>
+      <Description>
+        My educational journey has been focused on building a strong foundation in data science and technology.
+      </Description>
+      
+      <EducationList>
+        {education.map((edu, index) => (
+          <EducationCard key={index}>
+            {edu.img && <SchoolLogo src={edu.img} alt={edu.school} />}
+            <EducationContent>
+              <SchoolName>{edu.school}</SchoolName>
+              {edu.degree && <Degree>{edu.degree}</Degree>}
+              <Duration>{edu.date}</Duration>
+              {edu.grade && <Grade>Grade: {edu.grade}</Grade>}
+              <EducationDescription>{edu.desc}</EducationDescription>
+            </EducationContent>
+          </EducationCard>
+        ))}
+      </EducationList>
+    </Container>
+  );
+};
+
+export default Education;

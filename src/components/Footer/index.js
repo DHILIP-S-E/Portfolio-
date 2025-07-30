@@ -1,128 +1,131 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import TwitterIcon from '@mui/icons-material/Twitter';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import InstagramIcon from '@mui/icons-material/Instagram';
+import { FaLinkedin, FaGithub, FaEnvelope } from 'react-icons/fa';
 import { loadMarkdownFile } from '../../utils/contentLoader';
 
-const FooterContainer = styled.div`
-  width: 100%;
-  padding: 2rem 0;
-  display: flex;
-  justify-content: center;
-  //background: linear-gradient(100.26deg, rgba(0, 102, 255, 0.05) 42.33%, rgba(150, 0, 225, 0.05) 127.07%);
+const FooterContainer = styled.footer`
+  background: ${({ theme }) => theme.card_light};
+  padding: 40px 20px 20px;
+  text-align: center;
 `;
 
-
-const FooterWrapper = styled.footer`
-  width: 100%;
+const FooterContent = styled.div`
   max-width: 1200px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  align-items: center;
-  padding: 1rem;
-  color: ${({ theme }) => theme.text_primary};
+  margin: 0 auto;
 `;
 
-const Logo = styled.h1`
+const Name = styled.h3`
+  font-size: 1.5rem;
   font-weight: 600;
-  font-size: 20px;
   color: ${({ theme }) => theme.primary};
+  margin-bottom: 20px;
 `;
 
-const Nav = styled.nav`
-  width: 100%;
-  max-width: 800px;
-  margin-top: 0.5rem;
+const Navigation = styled.nav`
   display: flex;
-  flex-direction: row;
-  gap: 2rem;
   justify-content: center;
-  @media (max-width: 768px) {
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: center;
-    text-align: center;
-    font-size: 12px;
-  }
+  gap: 30px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
 `;
 
 const NavLink = styled.a`
-color: ${({ theme }) => theme.text_primary};
-  text-decoration: none;
-  font-size: 1.2rem;
-  transition: color 0.2s ease-in-out;
-  &:hover {
-    color: ${({ theme }) => theme.primary};
-  }
-  @media (max-width: 768px) {
-    font-size: 1rem;
-  }
-`;
-
-const SocialMediaIcons = styled.div`
-  display: flex;
-  margin-top: 1rem;
-`;
-
-const SocialMediaIcon = styled.a`
-  display: inline-block;
-  margin: 0 1rem;
-  font-size: 1.5rem;
   color: ${({ theme }) => theme.text_primary};
-  transition: color 0.2s ease-in-out;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  
   &:hover {
     color: ${({ theme }) => theme.primary};
+  }
+`;
+
+const SocialLinks = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 30px;
+`;
+
+const SocialLink = styled.a`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: ${({ theme }) => theme.card};
+  border-radius: 50%;
+  color: ${({ theme }) => theme.text_primary};
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: ${({ theme }) => theme.primary};
+    transform: translateY(-3px);
   }
 `;
 
 const Copyright = styled.p`
-  margin-top: 1.5rem;
+  color: ${({ theme }) => theme.text_secondary};
   font-size: 0.9rem;
-  color: ${({ theme }) => theme.soft2};
-  text-align: center;
+  border-top: 1px solid ${({ theme }) => theme.primary}20;
+  padding-top: 20px;
 `;
 
-function Footer() {
+const Footer = () => {
   const [bio, setBio] = useState(null);
 
   useEffect(() => {
     const fetchBio = async () => {
-      const bioContent = await loadMarkdownFile('/content/about/index.md');
-      setBio(bioContent.frontmatter);
+      try {
+        const bioContent = await loadMarkdownFile('/content/about/index.md');
+        setBio(bioContent.frontmatter);
+      } catch (error) {
+        console.error('Error loading bio:', error);
+      }
     };
     fetchBio();
   }, []);
 
   if (!bio) {
-    return <div>Loading...</div>;
+    return null;
   }
 
   return (
     <FooterContainer>
-      <FooterWrapper>
-        <Logo>{bio.name}</Logo>
-        <Nav>
+      <FooterContent>
+        <Name>{bio.name}</Name>
+        
+        <Navigation>
           <NavLink href="#about">About</NavLink>
           <NavLink href="#skills">Skills</NavLink>
           <NavLink href="#projects">Projects</NavLink>
           <NavLink href="#education">Education</NavLink>
-        </Nav>
-        <SocialMediaIcons>
-          <SocialMediaIcon href={bio.facebook} target="display"><FacebookIcon /></SocialMediaIcon>
-          <SocialMediaIcon href={bio.twitter} target="display"><TwitterIcon /></SocialMediaIcon>
-          <SocialMediaIcon href={bio.linkedin} target="display"><LinkedInIcon /></SocialMediaIcon>
-          <SocialMediaIcon href={bio.insta} target="display"><InstagramIcon /></SocialMediaIcon>
-        </SocialMediaIcons>
+          <NavLink href="#contact">Contact</NavLink>
+        </Navigation>
+        
+        <SocialLinks>
+          {bio.linkedin && (
+            <SocialLink href={bio.linkedin} target="_blank" rel="noopener noreferrer">
+              <FaLinkedin />
+            </SocialLink>
+          )}
+          {bio.github && (
+            <SocialLink href={bio.github} target="_blank" rel="noopener noreferrer">
+              <FaGithub />
+            </SocialLink>
+          )}
+          <SocialLink href="mailto:dheesanaysha@gmail.com">
+            <FaEnvelope />
+          </SocialLink>
+        </SocialLinks>
+        
         <Copyright>
-          &copy; 2023 {bio.name}. All rights reserved.
+          © {new Date().getFullYear()} {bio.name}. All rights reserved.
         </Copyright>
-
-      </FooterWrapper>
+      </FooterContent>
     </FooterContainer>
   );
-}
+};
 
 export default Footer;

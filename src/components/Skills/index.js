@@ -3,117 +3,77 @@ import styled from 'styled-components';
 import { loadMarkdownFile } from '../../utils/contentLoader';
 
 const Container = styled.div`
-display: flex;
-flex-direction: column;
-justify-content: center;
-position: relative;
-z-index: 1;
-align-items: center;
-`;
-
-const Wrapper = styled.div`
-position: relative;
-display: flex;
-justify-content: space-between;
-align-items: center;
-flex-direction: column;
-width: 100%;
-max-width: 1100px;
-gap: 12px;
-@media (max-width: 960px) {
-    flex-direction: column;
-}
-`;
-
-export const Title = styled.div`
-font-size: 42px;
-text-align: center;
-font-weight: 600;
-margin-top: 20px;
-  color: ${({ theme }) => theme.text_primary};
-  @media (max-width: 768px) {
-margin-top: 12px;
-      font-size: 32px;
-  }
-`;
-
-export const Desc = styled.div`
-    font-size: 18px;
-    text-align: center;
-    max-width: 600px;
-    color: ${({ theme }) => theme.text_secondary};
-    @media (max-width: 768px) {
-        font-size: 16px;
-    }
-`;
-
-const SkillsContainer = styled.div`
-  width: 100%;
   display: flex;
-  flex-wrap: wrap;
-  margin-top: 30px;
-  gap: 30px;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
+  padding: 80px 20px;
+  background: linear-gradient(135deg, ${({ theme }) => theme.card_light}20 0%, ${({ theme }) => theme.bg} 100%);
 `;
 
-const Skill = styled.div`
-  width: 100%;
-  max-width: 500px;
-  background: ${({ theme }) => theme.card};
-  border: 0.1px solid #854CE6;
-  box-shadow: rgba(23, 92, 230, 0.15) 0px 4px 24px;
-  border-radius: 16px;
-  padding: 18px 36px;
-  @media (max-width: 768px) {
-    max-width: 400px;
-    padding: 10px 36px;
-  }
-  @media (max-width: 500px) {
-    max-width: 330px;
-    padding: 10px 36px;
-  }
-`;
-
-const SkillTitle = styled.h2`
-  font-size: 28px;
+const Title = styled.h2`
+  font-size: 2.5rem;
   font-weight: 600;
-  color: ${({ theme }) => theme.text_secondary};
+  color: ${({ theme }) => theme.text_primary};
   margin-bottom: 20px;
   text-align: center;
 `;
 
-const SkillList = styled.div`
+const Description = styled.p`
+  font-size: 1.1rem;
+  color: ${({ theme }) => theme.text_secondary};
+  text-align: center;
+  max-width: 600px;
+  margin-bottom: 50px;
+`;
+
+const SkillsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  width: 100%;
+  max-width: 1200px;
+`;
+
+const SkillCategory = styled.div`
+  background: ${({ theme }) => theme.card};
+  border-radius: 16px;
+  padding: 30px;
+  border: 1px solid ${({ theme }) => theme.primary}20;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+`;
+
+const CategoryTitle = styled.h3`
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: ${({ theme }) => theme.text_primary};
+  margin-bottom: 20px;
+  text-align: center;
+`;
+
+const SkillsList = styled.div`
   display: flex;
-  justify-content: center; 
   flex-wrap: wrap;
   gap: 12px;
-  margin-bottom: 20px;
+  justify-content: center;
 `;
 
 const SkillItem = styled.div`
-  font-size: 16px;
-  font-weight: 400;
-  color: ${({ theme }) => theme.text_primary + 80};
-  border: 1px solid ${({ theme }) => theme.text_primary + 80};
-  border-radius: 12px;
-  padding: 12px 16px;
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
-  @media (max-width: 768px) {
-    font-size: 14px;
-    padding: 8px 12px;
-  }
-  @media (max-width: 500px) {
-    font-size: 14px;
-    padding: 6px 12px;
-  }
+  padding: 8px 16px;
+  background: ${({ theme }) => theme.primary}15;
+  border: 1px solid ${({ theme }) => theme.primary}30;
+  border-radius: 20px;
+  color: ${({ theme }) => theme.text_primary};
+  font-size: 0.9rem;
+  font-weight: 500;
 `;
 
-const SkillImage = styled.img`
-  width: 24px;
-  height: 24px;
+const SkillIcon = styled.img`
+  width: 20px;
+  height: 20px;
 `;
 
 const Skills = () => {
@@ -121,37 +81,46 @@ const Skills = () => {
 
   useEffect(() => {
     const fetchSkills = async () => {
-      const skillsContent = await loadMarkdownFile('/content/skills/index.md');
-      setSkillsData(skillsContent.frontmatter);
+      try {
+        const skillsContent = await loadMarkdownFile('/content/skills/index.md');
+        setSkillsData(skillsContent.frontmatter);
+      } catch (error) {
+        console.error('Error loading skills:', error);
+      }
     };
     fetchSkills();
   }, []);
 
   if (!skillsData) {
-    return <div>Loading skills...</div>;
+    return (
+      <Container>
+        <div>Loading skills...</div>
+      </Container>
+    );
   }
 
   return (
     <Container id="skills">
-      <Wrapper>
-        <Title>Skills</Title>
-        <Desc>Here are some of my skills on which I have been working on for the past 2 years.</Desc>
-        <SkillsContainer>
-          {skillsData?.skills?.map((skillCategory) => (
-            <Skill key={skillCategory.title}>
-              <SkillTitle>{skillCategory.title}</SkillTitle>
-              <SkillList>
-                {skillCategory?.skills?.map((item) => (
-                  <SkillItem key={item.name}>
-                    <SkillImage src={item.image} />
-                    {item.name}
-                  </SkillItem>
-                ))}
-              </SkillList>
-            </Skill>
-          ))}
-        </SkillsContainer>
-      </Wrapper>
+      <Title>Skills</Title>
+      <Description>
+        Here are the technologies and tools I work with to bring ideas to life.
+      </Description>
+      
+      <SkillsGrid>
+        {skillsData?.skills?.map((category, index) => (
+          <SkillCategory key={index}>
+            <CategoryTitle>{category.title}</CategoryTitle>
+            <SkillsList>
+              {category.skills?.map((skill, skillIndex) => (
+                <SkillItem key={skillIndex}>
+                  <SkillIcon src={skill.image} alt={skill.name} />
+                  {skill.name}
+                </SkillItem>
+              ))}
+            </SkillsList>
+          </SkillCategory>
+        ))}
+      </SkillsGrid>
     </Container>
   );
 };
